@@ -10,5 +10,5 @@ categories = ["data-structures"]
 license = "MIT"
 
 [badges]
-travis-ci = { repository="trinitum/uvector.git" }
+travis-ci = { repository="trinitum/uvector" }
 maintenance = { status = "experimental" }
