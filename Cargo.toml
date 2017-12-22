@@ -1,0 +1,14 @@
+[package]
+name = "uvector"
+version = "0.1.0"
+authors = ["Pavel Shaydo <zwon@trinitum.org>"]
+description = "access two slices as a single continuous vector"
+repository = "https://github.com/trinitum/uvector"
+keywords = ["vecdeque"]
+categories = ["data-structures"]
+license = "MIT"
+
+[badges]
+gitlab = { repository="https://github.com/trinitum/uvector.git" }
+travis-ci = { repository="https://github.com/trinitum/uvector.git" }
+maintenance = { status = "experimental" }
