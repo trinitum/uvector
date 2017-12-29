@@ -2,7 +2,7 @@
 //
 // Licensed under the MIT license see LICENSE file
 
-//! Allows to access two read-only slices as a single vector.
+//! Allows access two read-only slices as a single vector.
 use std::ops::Index;
 use std::iter::Iterator;
 use std::iter::IntoIterator;
@@ -90,6 +90,16 @@ impl<'a, T> UVec<'a, T> {
             one: slices.0,
             two: slices.1,
         }
+    }
+    /// Constructs a new empty `UVec<T>`
+    ///
+    /// ```
+    /// # use uvector::UVec;
+    /// let uv: UVec<u32> = UVec::empty();
+    /// assert_eq!(uv.len(), 0);
+    /// ```
+    pub fn empty() -> Self {
+        UVec { one: &[], two: &[] }
     }
     /// Returns the length of the vector. The length is determined as the sum of lengths of all the
     /// components.
