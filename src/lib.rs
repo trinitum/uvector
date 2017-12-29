@@ -121,6 +121,12 @@ impl<'a, T> UVec<'a, T> {
     }
 }
 
+impl<'a, T> Clone for UVec<'a, T> {
+    fn clone(&self) -> Self {
+        UVec { s: self.s }
+    }
+}
+
 impl<'a, T> Index<usize> for UVec<'a, T> {
     type Output = T;
     fn index(&self, index: usize) -> &T {
@@ -235,5 +241,12 @@ mod test {
             sum2 += i
         }
         assert_eq!(sum2, 14);
+    }
+
+    #[test]
+    fn clone() {
+        let uv = UVec::new((&[1, 2], &[3, 4]));
+        let cv = uv.clone();
+        assert_eq!(cv.len(), 4);
     }
 }
