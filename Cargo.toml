@@ -1,6 +1,6 @@
 [package]
 name = "uvector"
-version = "0.1.1"
+version = "0.2.0"
 authors = ["Pavel Shaydo <zwon@trinitum.org>"]
 description = "access two slices as a single continuous vector"
 readme = "README.md"
