@@ -79,17 +79,13 @@ use std::iter::IntoIterator;
 /// ```
 #[derive(Debug)]
 pub struct UVec<'a, T: 'a> {
-    one: &'a [T],
-    two: &'a [T],
+    s: (&'a [T], &'a [T]),
 }
 
 impl<'a, T> UVec<'a, T> {
     /// Constructs a new `UVec<T>` from a tupple of two slices
-    pub fn new(slices: (&'a [T], &'a [T])) -> Self {
-        UVec {
-            one: slices.0,
-            two: slices.1,
-        }
+    pub fn new(s: (&'a [T], &'a [T])) -> Self {
+        UVec { s }
     }
     /// Constructs a new empty `UVec<T>`
     ///
@@ -99,20 +95,16 @@ impl<'a, T> UVec<'a, T> {
     /// assert_eq!(uv.len(), 0);
     /// ```
     pub fn empty() -> Self {
-        UVec { one: &[], two: &[] }
+        UVec { s: (&[], &[]) }
     }
     /// Returns the length of the vector. The length is determined as the sum of lengths of all the
     /// components.
     pub fn len(&self) -> usize {
-        self.one.len() + self.two.len()
+        self.s.0.len() + self.s.1.len()
     }
     /// Returns iterator over `UVec`
     pub fn iter(&self) -> Iter<T> {
-        Iter {
-            pos: 0,
-            one: self.one,
-            two: self.two,
-        }
+        Iter { pos: 0, s: self.s }
     }
     /// Returns a new UVec that only includes the values from the specified range.
     ///
@@ -120,23 +112,23 @@ impl<'a, T> UVec<'a, T> {
     ///
     /// Panics if the specified range is not contained within the `UVec`
     pub fn range(&self, start: usize, end: usize) -> Self {
-        let len1 = self.one.len();
+        let len1 = self.s.0.len();
         let start1 = if start < len1 { start } else { len1 };
         let end1 = if end < len1 { end } else { len1 };
         let start2 = if start < len1 { 0 } else { start - len1 };
         let end2 = if end < len1 { 0 } else { end - len1 };
-        Self::new((&self.one[start1..end1], &self.two[start2..end2]))
+        Self::new((&self.s.0[start1..end1], &self.s.1[start2..end2]))
     }
 }
 
 impl<'a, T> Index<usize> for UVec<'a, T> {
     type Output = T;
     fn index(&self, index: usize) -> &T {
-        let len = self.one.len();
+        let len = self.s.0.len();
         if index < len {
-            &self.one[index]
+            &self.s.0[index]
         } else {
-            &self.two[index - len]
+            &self.s.1[index - len]
         }
     }
 }
@@ -144,23 +136,22 @@ impl<'a, T> Index<usize> for UVec<'a, T> {
 /// An iterator over the elements of a `UVec`
 pub struct Iter<'a, T: 'a> {
     pos: usize,
-    one: &'a [T],
-    two: &'a [T],
+    s: (&'a [T], &'a [T]),
 }
 
 impl<'a, T> Iterator for Iter<'a, T> {
     type Item = &'a T;
     fn next(&mut self) -> Option<&'a T> {
-        let len1 = self.one.len();
+        let len1 = self.s.0.len();
         let pos = self.pos;
         if pos < len1 {
             self.pos += 1;
-            Some(&self.one[pos])
+            Some(&self.s.0[pos])
         } else {
-            let len2 = self.two.len();
+            let len2 = self.s.1.len();
             if pos < len1 + len2 {
                 self.pos += 1;
-                Some(&self.two[pos - len1])
+                Some(&self.s.1[pos - len1])
             } else {
                 None
             }
@@ -172,11 +163,7 @@ impl<'a, T> IntoIterator for UVec<'a, T> {
     type Item = &'a T;
     type IntoIter = Iter<'a, T>;
     fn into_iter(self) -> Iter<'a, T> {
-        Iter {
-            pos: 0,
-            one: self.one,
-            two: self.two,
-        }
+        Iter { pos: 0, s: self.s }
     }
 }
 
